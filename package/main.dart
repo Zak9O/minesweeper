@@ -1,8 +1,9 @@
 import 'point.dart';
 import 'screen.dart';
+import 'dart:io';
 
 void main() {
-  Screen screen = Screen.createScreen(width: 4, height: 4, mines: [
+  Screen screen = Screen.createScreen(width: 6, height: 6, mines: [
     Point(x: 0, y: 0, isBomb: true),
     Point(x: 2, y: 0, isBomb: true),
     Point(x: 1, y: 1, isBomb: true),
@@ -12,10 +13,12 @@ void main() {
   screen.calculateAdjacentBombs();
   screen.drawScreen();
 
-  screen.selectBomb(0, 3);
-  screen.selectBomb(0, 1);
-  screen.selectBomb(1, 1);
-  //screen.selectBomb(1, 0);
-  //screen.selectBomb(2, 1);
+  bool playGame = true;
+
+  while (playGame){
+    String line = stdin.readLineSync();
+    List<String> input = line.split(',');
+    playGame = screen.selectBomb(int.parse(input[0]), int.parse(input[1]));
+  }
 
 }

@@ -12,7 +12,8 @@ class Screen {
   final int width; //The amount of x-coordinates as width
   final int height; //The amount of y-coordinates as height
   final List<Point> mines; //The coordinates of the mines
-  List<Point> coordinateSystem = []; //The list which hold every point
+  List<Point> coordinateSystem = [];  //The list which hold every point
+  List<Point> selectedPoints = [];    //A list that keeps track of how many bombs there have been selected
 
   //A function that creates every point in the coordinate system
   void createCoordinateSystem() {
@@ -111,7 +112,9 @@ class Screen {
     }
   }
 
-  void selectBomb(int x, int y) {
+  //If the selected point is a bomb
+  //Return false and end game.
+  bool selectBomb(int x, int y) {
     //Gets the selected mine from the coordinate system
     // ignore: omit_local_variable_types
     Point selectedPoint = coordinateSystem.where((p) {
@@ -121,11 +124,16 @@ class Screen {
       return false;
     }).toList()[0];
 
+    //If the selectedPoint has not been selected before, add it to the score tracker
+    if (!selectedPoint.isSelected){
+      selectedPoints.add(selectedPoint);
+    }
+
     selectedPoint.isSelected = true;
 
     if (selectedPoint.isBomb){
       print('You lost, it was a bomb');
-      return;
+      return false;
     } else if (selectedPoint.adjacentBombs == 0){
       //If the selected point has no adjacent points
       //Show all of the points adjent to the selected point
@@ -149,6 +157,10 @@ class Screen {
 
           //If there was a match, select the bomb
           if (adjacentPoint.length == 1){
+            //And add it to the selectedPoints
+            if(!adjacentPoint[0].isSelected){
+              selectedPoints.add(adjacentPoint[0]);
+            }
             //Makes the adjacent point visible
             adjacentPoint[0].isSelected = true;
           }
@@ -160,6 +172,15 @@ class Screen {
     }
     print("");
     drawScreen();
+
+    //Checks if all the selectable points has been selected.
+    //Is yes the game has been won
+    if (selectedPoints.length == coordinateSystem.length - mines.length){
+      print("\nYou won the game!");
+      return false;
+    }
+
+    return true;
   }
 
 }
