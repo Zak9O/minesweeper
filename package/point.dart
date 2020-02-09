@@ -11,15 +11,28 @@ class Point{
   final bool isBomb;  //If true the point is a bomb
 
   int adjacentBombs = 0;  //Number of adjacent bombs
+  bool isSelected = false;  //If isSelected draw the adjacentBombs attribute
 
   //A function that returns what to draw as the point
   String drawPoint(){
+    if (isSelected){
+      if (isBomb){
+        return 'M';
+      } else if (adjacentBombs != 0){
+        return adjacentBombs.toString();
+      } else {
+        return ' ';
+      }
+    }
+
+    return '*';
+
     if(isBomb){
       return 'M';
     } else if (adjacentBombs != 0){
       return adjacentBombs.toString();
     }
-    return ' ';
+    return '*';
   }
 
   @override

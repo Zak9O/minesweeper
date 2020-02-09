@@ -11,4 +11,11 @@ void main() {
   ]);
   screen.calculateAdjacentBombs();
   screen.drawScreen();
+
+  screen.selectBomb(0, 3);
+  screen.selectBomb(0, 1);
+  screen.selectBomb(1, 1);
+  //screen.selectBomb(1, 0);
+  //screen.selectBomb(2, 1);
+
 }

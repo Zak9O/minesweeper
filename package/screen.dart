@@ -41,7 +41,7 @@ class Screen {
         ));
       }
     }
-    //print(coordinateSystem);
+    print(coordinateSystem);
     //print(coordinateSystem.length);
   }
 
@@ -58,13 +58,12 @@ class Screen {
       for (pointPosition; coordinateSystem[pointPosition].y == y;) {
         stdout.write(coordinateSystem[pointPosition].drawPoint());
 
-        //Makes sure that pointPositions does not get out of range and cause an index error
+        //If block that Makes sure that pointPositions does not get out of range and cause an index error
         if (pointPosition == coordinateSystem.length - 1) {
           break;
         }
         pointPosition++;
       }
-      //print('|' + '*' * width + '|');
       //stdout.write("hej"); Use to print on same line
       print('|');
     }
@@ -83,7 +82,6 @@ class Screen {
 
         for (int tempY = -1; tempY < 2; tempY++) {
           for (int tempX = -1; tempX < 2; tempX++) {
-
             /*
             This variable sees if there is a point adjacent to the current bomb.
              */
@@ -101,16 +99,67 @@ class Screen {
 
             //If there is a point and that point is a bomb
             //Make the current bomb adjacentBomb attribute grow with 1
-            if (potentialBomb.length == 1){
-              if (potentialBomb[0].isBomb){
+            if (potentialBomb.length == 1) {
+              if (potentialBomb[0].isBomb) {
                 coordinateSystem[mineIndex].adjacentBombs++;
               }
             }
-
           }
         }
         mineIndex++;
       }
     }
   }
+
+  void selectBomb(int x, int y) {
+    //Gets the selected mine from the coordinate system
+    // ignore: omit_local_variable_types
+    Point selectedPoint = coordinateSystem.where((p) {
+      if (p.x == x && p.y == y){
+        return true;
+      }
+      return false;
+    }).toList()[0];
+
+    selectedPoint.isSelected = true;
+
+    if (selectedPoint.isBomb){
+      print('You lost, it was a bomb');
+      return;
+    } else if (selectedPoint.adjacentBombs == 0){
+      //If the selected point has no adjacent points
+      //Show all of the points adjent to the selected point
+      int mineIndex = coordinateSystem.indexOf(selectedPoint);
+
+      for (int tempY = -1; tempY < 2; tempY++) {
+        for (int tempX = -1; tempX < 2; tempX++) {
+          /*
+            This variable sees if there is a point adjacent to the selected point.
+             */
+          // ignore: omit_local_variable_types
+          List<Point> adjacentPoint = coordinateSystem.where((p) {
+            if (p == coordinateSystem[mineIndex]) {
+              return false;
+            } else if (p.x == coordinateSystem[mineIndex].x + tempX &&
+                p.y == coordinateSystem[mineIndex].y + tempY) {
+              return true;
+            }
+            return false;
+          }).toList();
+
+          //If there was a match, select the bomb
+          if (adjacentPoint.length == 1){
+            //Makes the adjacent point visible
+            adjacentPoint[0].isSelected = true;
+          }
+
+        }
+      }
+    } else {
+      selectedPoint.isSelected = true;
+    }
+    print("");
+    drawScreen();
+  }
+
 }
